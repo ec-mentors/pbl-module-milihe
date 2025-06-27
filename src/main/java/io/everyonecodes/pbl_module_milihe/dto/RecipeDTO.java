@@ -1,23 +1,15 @@
-package io.everyonecodes.pbl_module_milihe;
+package io.everyonecodes.pbl_module_milihe.dto;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity
-@Table
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+public class RecipeDTO {
 
-public class Recipe {
-    @Id
-    @GeneratedValue
-    private int id;
+    private Long id;
     private int spoonacularId;
     private String title;
     private int readyInMinutes;
@@ -29,4 +21,5 @@ public class Recipe {
     private int healthScore;
     private String summary;
     private String stepByStepInstruction;
+    private String image;
 }

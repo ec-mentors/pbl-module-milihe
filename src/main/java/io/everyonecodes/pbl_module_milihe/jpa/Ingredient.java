@@ -1,4 +1,4 @@
-package io.everyonecodes.pbl_module_milihe;
+package io.everyonecodes.pbl_module_milihe.jpa;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
