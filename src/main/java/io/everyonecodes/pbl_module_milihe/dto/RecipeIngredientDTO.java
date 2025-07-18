@@ -12,8 +12,8 @@ public class RecipeIngredientDTO {
     private Long id;
     private int spoonacularId;
     private String name;
-    private String originalString; // Renamed from 'original' to avoid conflicts if 'original' is a keyword
+    private String originalString;
     private double amount;
     private String unit;
-    private String image; // will need to reconstruct the full URL using Spoonacular's base image path. e.g., "baby-beets.jpg"
+    private String image;
 }
