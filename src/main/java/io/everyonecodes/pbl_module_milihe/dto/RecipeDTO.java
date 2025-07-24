@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,4 +24,6 @@ public class RecipeDTO {
     private String summary;
     private String stepByStepInstruction;
     private String image;
+    private String sourceUrl;
+    private List<RecipeIngredientDTO> extendedIngredients;
 }
