@@ -76,20 +76,19 @@ public class IngredientService {
     }
 
     /**
-     * Converts an IngredientDTO to an Ingredient JPA entity.
-     * Note: ID might be null for new entities.
-     * This method now correctly matches the constructor of the Ingredient JPA entity
-     * by providing an empty ArrayList for the 'recipeIngredients' list.
-     * @param dto The IngredientDTO.
+     * Converts an IngredientDTO into an Ingredient JPA entity.
+     * Note: The ID of the returned entity will be null if the DTO represents a new ingredient.
+     * @param dto The IngredientDTO to convert.
      * @return The corresponding Ingredient entity.
      */
     public Ingredient fromIngredientDTO(IngredientDTO dto) {
-        return new Ingredient(
-                dto.getId(),
-                dto.getSpoonacularId(),
-                dto.getName(),
-                dto.getImage(),
-                new ArrayList<>()
-        );
+        Ingredient ingredient = new Ingredient();
+
+        ingredient.setId(dto.getId());
+        ingredient.setSpoonacularId(dto.getSpoonacularId());
+        ingredient.setName(dto.getName());
+        ingredient.setImage(dto.getImage());
+
+        return ingredient;
     }
 }

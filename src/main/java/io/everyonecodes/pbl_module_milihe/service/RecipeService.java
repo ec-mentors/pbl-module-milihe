@@ -5,8 +5,6 @@ import io.everyonecodes.pbl_module_milihe.dto.RecipeIngredientDTO;
 import io.everyonecodes.pbl_module_milihe.jpa.Ingredient;
 import io.everyonecodes.pbl_module_milihe.jpa.Recipe;
 import io.everyonecodes.pbl_module_milihe.jpa.RecipeIngredient;
-import io.everyonecodes.pbl_module_milihe.repository.IngredientRepository;
-import io.everyonecodes.pbl_module_milihe.repository.RecipeIngredientRepository;
 import io.everyonecodes.pbl_module_milihe.repository.RecipeRepository;
 import org.springframework.stereotype.Service;
 
@@ -16,53 +14,22 @@ import java.util.stream.Collectors;
 
 /**
  * Service class for managing Recipe entities and their associated DTOs.
- * This class encapsulates the business logic related to recipes,
- * orchestrates interactions with repositories, and handles the conversion
- * between JPA entities and DTOs for external consumption.
  */
 @Service
 public class RecipeService {
     private final RecipeRepository recipeRepository;
-    private final IngredientRepository ingredientRepository;
-    private final RecipeIngredientRepository recipeIngredientRepository;
 
-    /**
-     * Constructor for RecipeService.
-     * Spring automatically injects the required repository instances.
-     *
-     * @param recipeRepository           The repository for Recipe entities.
-     * @param ingredientRepository       The repository for Ingredient entities.
-     * @param recipeIngredientRepository The repository for RecipeIngredient entities.
-     */
-    public RecipeService(RecipeRepository recipeRepository,
-                         IngredientRepository ingredientRepository,
-                         RecipeIngredientRepository recipeIngredientRepository) {
+    public RecipeService(RecipeRepository recipeRepository) {
         this.recipeRepository = recipeRepository;
-        this.ingredientRepository = ingredientRepository;
-        this.recipeIngredientRepository = recipeIngredientRepository;
     }
 
     /**
-     * Saves a new Recipe entity to the database.
-     * This method directly saves the JPA entity. In more complex scenarios,
-     * you might take a RecipeDTO and convert it to a Recipe entity here.
-     *
-     * @param recipe The Recipe entity to save.
-     * @return The saved Recipe entity, potentially with an updated ID.
-     */
-    public Recipe saveRecipe(Recipe recipe) {
-        return recipeRepository.save(recipe);
-    }
-
-    /**
-     * Retrieves all Recipe entities from the database and converts them into RecipeDTOs.
-     * This method demonstrates fetching entities and then transforming them for the client.
-     *
-     * @return A list of RecipeDTOs.
+     * Retrieves all recipes from the database and converts them into a list of RecipeDTOs.
+     * This operation eagerly fetches all associated ingredients to ensure efficiency.
+     * @return A list of RecipeDTOs representing all recipes.
      */
     public List<RecipeDTO> findAllRecipes() {
         List<Recipe> recipes = recipeRepository.findAllWithIngredients();
-
         return recipes.stream()
                 .map(this::toRecipeDTO)
                 .collect(Collectors.toList());
@@ -70,7 +37,6 @@ public class RecipeService {
 
     /**
      * Retrieves a single Recipe entity by its ID and converts it into a RecipeDTO.
-     *
      * @param id The ID of the recipe to retrieve.
      * @return An Optional containing the RecipeDTO if found, or an empty Optional if not.
      */
@@ -80,53 +46,52 @@ public class RecipeService {
     }
 
     /**
-     * Converts a Recipe JPA entity into a RecipeDTO.
-     * This method is responsible for mapping fields and, importantly,
-     * building the list of RecipeIngredientDTOs by fetching associated ingredient details.
+     * Converts a Recipe entity into its corresponding RecipeDTO.
+     * This method handles the mapping of all fields and the conversion of the
+     * associated ingredients list.
      *
-     * @param recipe The Recipe JPA entity to convert.
-     * @return The corresponding RecipeDTO.
+     * @param recipe The Recipe entity to convert.
+     * @return The fully populated RecipeDTO.
      */
     private RecipeDTO toRecipeDTO(Recipe recipe) {
-
-        List<RecipeIngredientDTO> recipeIngredientDTOs = recipe.getRecipeIngredients().stream()
+        List<RecipeIngredientDTO> recipeIngredientDTOs = recipe.getIngredients().stream()
                 .map(this::toRecipeIngredientDTO)
                 .collect(Collectors.toList());
 
+
         return new RecipeDTO(
                 recipe.getId(),
-                recipe.getSpoonacularId(),
+                0,
                 recipe.getTitle(),
-                recipe.getReadyInMinutes(),
-                recipe.getServings(),
-                recipe.isVegetarian(),
+                0,
+                0,
+                false,
                 recipe.isVegan(),
-                recipe.isGlutenFree(),
-                recipe.isDairyFree(),
-                recipe.getHealthScore(),
-                recipe.getSummary(),
-                recipe.getStepByStepInstruction(),
-                recipe.getImage(),
-                recipe.getSourceUrl(),
+                false,
+                false,
+                0,
+                null,
+                null,
+                null,
+                null,
                 recipeIngredientDTOs
         );
     }
 
     /**
-     * Converts a RecipeIngredient JPA entity into a RecipeIngredientDTO.
-     * This method fetches the corresponding Ingredient details to enrich the DTO.
-     * This directly addresses Task 3's requirement to combine data.
+     * Converts a RecipeIngredient entity into its corresponding RecipeIngredientDTO.
+     * This method creates a "flattened" DTO that includes details from the
+     * associated Ingredient entity, such as its name and image.
      *
-     * @param recipeIngredient The RecipeIngredient JPA entity to convert.
+     * @param recipeIngredient The RecipeIngredient entity to convert.
      * @return The corresponding RecipeIngredientDTO.
      */
     private RecipeIngredientDTO toRecipeIngredientDTO(RecipeIngredient recipeIngredient) {
-
         Ingredient ingredient = recipeIngredient.getIngredient();
         return new RecipeIngredientDTO(
-                ingredient != null ? ingredient.getSpoonacularId() : 0,
+                0,
                 ingredient != null ? ingredient.getName() : "Unknown Ingredient",
-                recipeIngredient.getOriginalString(),
+                null,
                 recipeIngredient.getAmount(),
                 recipeIngredient.getUnit(),
                 ingredient != null ? ingredient.getImage() : null
