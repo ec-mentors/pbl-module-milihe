@@ -2,12 +2,14 @@ package io.everyonecodes.pbl_module_milihe.service;
 
 import io.everyonecodes.pbl_module_milihe.dto.RecipeDTO;
 import io.everyonecodes.pbl_module_milihe.dto.RecipeIngredientDTO;
+import io.everyonecodes.pbl_module_milihe.dto.RecipeSuggestionDTO;
 import io.everyonecodes.pbl_module_milihe.jpa.Ingredient;
 import io.everyonecodes.pbl_module_milihe.jpa.Recipe;
 import io.everyonecodes.pbl_module_milihe.jpa.RecipeIngredient;
 import io.everyonecodes.pbl_module_milihe.repository.RecipeRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -96,5 +98,47 @@ public class RecipeService {
                 recipeIngredient.getUnit(),
                 ingredient != null ? ingredient.getImage() : null
         );
+    }
+
+    public List<RecipeSuggestionDTO> findRecipesByIngredients(List<String> userIngredients) {
+
+        List<RecipeDTO> allRecipes = findAllRecipes();
+        List<RecipeSuggestionDTO> suggestions = new ArrayList<>();
+
+        for (RecipeDTO recipe : allRecipes) {
+            List<String> requiredIngredients = recipe.getExtendedIngredients().stream()
+                    .map(RecipeIngredientDTO::getName)
+                    .collect(Collectors.toList());
+
+            List<String> missingIngredients = new ArrayList<>();
+            for (String required : requiredIngredients) {
+                if (!userIngredients.contains(required)) {
+                    missingIngredients.add(required);
+                }
+            }
+
+            int requiredCount = requiredIngredients.size();
+            int missingCount = missingIngredients.size();
+            int matchedCount = requiredCount - missingCount;
+
+            RecipeSuggestionDTO suggestion = new RecipeSuggestionDTO(
+                    recipe.getId(),
+                    recipe.getSpoonacularId(),
+                    recipe.getTitle(),
+                    recipe.getImage(),
+                    matchedCount,
+                    missingCount,
+                    missingIngredients,
+                    recipe.isVegetarian(),
+                    recipe.isVegan(),
+                    recipe.isGlutenFree()
+            );
+
+            suggestions.add(suggestion);
+        }
+
+        suggestions.sort((s1, s2) -> Integer.compare(s1.getMissingIngredientCount(), s2.getMissingIngredientCount()));
+
+        return suggestions;
     }
 }
