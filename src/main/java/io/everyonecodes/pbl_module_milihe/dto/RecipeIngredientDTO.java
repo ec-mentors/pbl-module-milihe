@@ -1,8 +1,6 @@
 package io.everyonecodes.pbl_module_milihe.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 /**
  * DTO for transferring RecipeIngredient data, combining details
@@ -21,4 +19,6 @@ public class RecipeIngredientDTO {
     private double amount;
     private String unit;
     private String image;
+
+
 }

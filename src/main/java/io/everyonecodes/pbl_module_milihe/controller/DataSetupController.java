@@ -6,9 +6,8 @@ import io.everyonecodes.pbl_module_milihe.jpa.RecipeIngredient;
 import io.everyonecodes.pbl_module_milihe.repository.IngredientRepository;
 import io.everyonecodes.pbl_module_milihe.repository.RecipeRepository;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
@@ -23,7 +22,7 @@ public class DataSetupController {
         this.ingredientRepository = ingredientRepository;
     }
 
-    @GetMapping("/data")
+    @PostMapping("/data")
     @Transactional
     public String setupData() {
         Ingredient tomato = ingredientRepository.save(new Ingredient("Tomato", "tomato.jpg"));
