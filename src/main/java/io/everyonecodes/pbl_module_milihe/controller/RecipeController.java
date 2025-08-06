@@ -5,7 +5,6 @@ import io.everyonecodes.pbl_module_milihe.dto.RecipeSuggestionDTO;
 import io.everyonecodes.pbl_module_milihe.service.RecipeService;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,8 +35,6 @@ public class RecipeController {
                 .filter(RecipeDTO::isVegan)
                 .collect(Collectors.toList());
     }
-
-    // ... inside your RecipeController.java ...
 
     /**
      * Endpoint to find recipes based on a list of provided ingredients.

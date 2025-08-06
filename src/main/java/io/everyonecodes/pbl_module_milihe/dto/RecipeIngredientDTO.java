@@ -12,13 +12,11 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RecipeIngredientDTO {
-    // private Long id;
     private int spoonacularId;
     private String name;
     private String originalString;
     private double amount;
     private String unit;
     private String image;
-
 
 }
