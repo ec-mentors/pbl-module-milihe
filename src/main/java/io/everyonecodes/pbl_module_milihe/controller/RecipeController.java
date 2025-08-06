@@ -4,8 +4,11 @@ import io.everyonecodes.pbl_module_milihe.dto.RecipeDTO;
 import io.everyonecodes.pbl_module_milihe.dto.RecipeSuggestionDTO;
 import io.everyonecodes.pbl_module_milihe.service.RecipeService;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -47,5 +50,22 @@ public class RecipeController {
     public List<RecipeSuggestionDTO> findRecipesByIngredients(@RequestBody List<String> ingredientNames) {
 
         return recipeService.findRecipesByIngredients(ingredientNames);
+    }
+
+    /**
+     * Endpoint to retrieve the full details of a single recipe by its ID.
+     *
+     * @param id The ID of the recipe, passed in the URL path.
+     * @return A ResponseEntity containing the RecipeDTO and a 200 OK status,
+     *         or an empty body with a 404 Not Found status if the recipe does not exist.
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<RecipeDTO> getRecipeById(@PathVariable Long id) {
+        Optional<RecipeDTO> optionalRecipeDTO = recipeService.findRecipeById(id);
+
+        return optionalRecipeDTO
+                .map(recipeDTO -> ResponseEntity.ok(recipeDTO))
+
+                .orElse(ResponseEntity.notFound().build());
     }
 }
