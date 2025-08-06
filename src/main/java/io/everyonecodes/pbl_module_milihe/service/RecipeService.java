@@ -29,6 +29,7 @@ public class RecipeService {
     /**
      * Retrieves all recipes from the database and converts them into a list of RecipeDTOs.
      * This operation eagerly fetches all associated ingredients to ensure efficiency.
+     *
      * @return A list of RecipeDTOs representing all recipes.
      */
     public List<RecipeDTO> findAllRecipes() {
@@ -40,11 +41,12 @@ public class RecipeService {
 
     /**
      * Retrieves a single Recipe entity by its ID and converts it into a RecipeDTO.
+     *
      * @param id The ID of the recipe to retrieve.
      * @return An Optional containing the RecipeDTO if found, or an empty Optional if not.
      */
     public Optional<RecipeDTO> findRecipeById(Long id) {
-        Optional<Recipe> recipeOptional = recipeRepository.findById(id);
+        Optional<Recipe> recipeOptional = recipeRepository.findByIdWithIngredients(id);
         return recipeOptional.map(this::toRecipeDTO);
     }
 
@@ -142,4 +144,6 @@ public class RecipeService {
 
         return suggestions;
     }
+
+
 }
