@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.Comparator;
 
 /**
  * Service class for managing Recipe entities and their associated DTOs.
@@ -137,7 +138,7 @@ public class RecipeService {
             suggestions.add(suggestion);
         }
 
-        suggestions.sort((s1, s2) -> Integer.compare(s1.getMissingIngredientCount(), s2.getMissingIngredientCount()));
+        suggestions.sort(Comparator.comparingInt(RecipeSuggestionDTO::getMissingIngredientCount));
 
         return suggestions;
     }
