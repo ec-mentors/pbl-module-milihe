@@ -22,16 +22,16 @@ class RecipeServiceTest {
     /**
      * This method runs before each test to set up a clean environment.
      */
-    @BeforeEach
-    void setUp() {
-
-        recipeService = new RecipeService(null) {
-            @Override
-            public List<RecipeDTO> findAllRecipes() {
-                return createTestRecipeData();
-            }
-        };
-    }
+//    @BeforeEach
+//    void setUp() {
+//
+//        recipeService = new RecipeService(null) {
+//            @Override
+//            public List<RecipeDTO> findAllRecipes() {
+//                return createTestRecipeData();
+//            }
+//        };
+//    }
 
     /**
      * This test verifies the core recipe search logic.

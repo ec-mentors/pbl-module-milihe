@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Details</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .recipe-detail-container {
+            max-width: 800px;
+        }
+        .recipe-detail-image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .ingredient-checklist {
+            list-style-type: none;
+            padding: 0;
+            margin-bottom: 30px;
+        }
+        .ingredient-checklist li {
+            font-size: 18px;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .instructions ol {
+            padding-left: 20px;
+            font-size: 17px;
+            line-height: 1.6;
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #3498db;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container recipe-detail-container">
+    <a href="recipes.html" class="back-link">&larr; Back to Suggestions</a>
+
+    <h1 id="recipe-title">Loading...</h1>
+    <img src="https://placehold.co/800x300?text=Loading..." alt="Recipe Image" id="recipe-image" class="recipe-detail-image">
+
+    <div class="ingredient-section">
+        <h2>Ingredients</h2>
+        <ul class="ingredient-checklist" id="ingredient-list">
+        </ul>
+    </div>
+
+    <div class="instructions">
+        <h2>Instructions</h2>
+        <div id="instructions-content">
+            <p>Loading instructions...</p>
+        </div>
+    </div>
+</div>
+
+<script src="recipe-detail.js"></script>
+</body>
+</html>
