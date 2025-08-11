@@ -3,20 +3,20 @@ package io.everyonecodes.pbl_module_milihe.controller;
 import io.everyonecodes.pbl_module_milihe.dto.RecipeDTO;
 import io.everyonecodes.pbl_module_milihe.dto.RecipeSuggestionDTO;
 import io.everyonecodes.pbl_module_milihe.service.RecipeService;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
- * REST Controller for handling recipe-related API requests.
- * This controller only interacts with the Service layer.
+ * REST Controller for handling all public, recipe-related API requests.
+ * This is the main entry point for the application's user-facing features.
  */
 @RestController
 @RequestMapping("/api/recipes")
+@CrossOrigin(origins = "*")
 public class RecipeController {
 
     private final RecipeService recipeService;
@@ -27,28 +27,22 @@ public class RecipeController {
 
     /**
      * Endpoint to get a list of all vegan recipes.
-     * This demonstrates a simple filtering logic.
      * @return A list of RecipeDTOs for all vegan recipes.
      */
     @GetMapping("/vegan")
     public List<RecipeDTO> getVeganRecipes() {
-        List<RecipeDTO> allRecipes = recipeService.findAllRecipes();
-
-        return allRecipes.stream()
+        return recipeService.findAllRecipes().stream()
                 .filter(RecipeDTO::isVegan)
                 .collect(Collectors.toList());
     }
 
     /**
      * Endpoint to find recipes based on a list of provided ingredients.
-     * Accepts a list of ingredient names and returns a sorted list of recipe suggestions.
-     *
-     * @param ingredientNames A list of ingredient names provided by the user in the request body.
-     * @return A sorted list of recipe suggestions (RecipeSuggestionDTO).
+     * @param ingredientNames A list of ingredient names provided by the user.
+     * @return A sorted list of recipe suggestions.
      */
     @PostMapping("/find")
     public List<RecipeSuggestionDTO> findRecipesByIngredients(@RequestBody List<String> ingredientNames) {
-
         return recipeService.findRecipesByIngredients(ingredientNames);
     }
 
@@ -64,8 +58,7 @@ public class RecipeController {
         Optional<RecipeDTO> optionalRecipeDTO = recipeService.findRecipeById(id);
 
         return optionalRecipeDTO
-                .map(recipeDTO -> ResponseEntity.ok(recipeDTO))
-
+                .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 }

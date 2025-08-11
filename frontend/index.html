@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What to cook? - Your Ingredients</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <h1>What to cook?</h1>
+
+    <h2>Your Ingredients</h2>
+
+    <div class="filters" style="margin-bottom: 20px; padding: 10px; background-color: #f9f9f9; border-radius: 4px;">
+        <label style="font-size: 16px; display: flex; align-items: center; gap: 8px;">
+            <input type="checkbox" id="vegan-filter" style="width: 18px; height: 18px;">
+            Show vegan recipes only
+        </label>
+    </div>
+
+    <div class="ingredient-form">
+        <input type="text" id="ingredient-input" placeholder="e.g., tomato, pasta, onion...">
+        <button class="btn btn-primary" id="add-ingredient-btn">Add</button>
+    </div>
+
+    <ul class="ingredient-list" id="ingredient-list-container">
+    </ul>
+
+    <a href="recipes.html" class="btn btn-primary find-recipes-btn" id="find-recipes-btn">Find Recipes</a>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
