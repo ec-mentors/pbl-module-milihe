@@ -3,7 +3,6 @@ package io.everyonecodes.pbl_module_milihe.service;
 import io.everyonecodes.pbl_module_milihe.dto.RecipeDTO;
 import io.everyonecodes.pbl_module_milihe.dto.RecipeIngredientDTO;
 import io.everyonecodes.pbl_module_milihe.dto.RecipeSuggestionDTO;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -18,20 +17,6 @@ class RecipeServiceTest {
 
     private RecipeService recipeService;
 
-
-    /**
-     * This method runs before each test to set up a clean environment.
-     */
-//    @BeforeEach
-//    void setUp() {
-//
-//        recipeService = new RecipeService(null) {
-//            @Override
-//            public List<RecipeDTO> findAllRecipes() {
-//                return createTestRecipeData();
-//            }
-//        };
-//    }
 
     /**
      * This test verifies the core recipe search logic.
