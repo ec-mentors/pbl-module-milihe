@@ -14,7 +14,6 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
     @Query("SELECT r FROM Recipe r LEFT JOIN FETCH r.ingredients ri LEFT JOIN FETCH ri.ingredient")
     List<Recipe> findAllWithIngredients();
 
-
     @Query("SELECT r FROM Recipe r LEFT JOIN FETCH r.ingredients ri LEFT JOIN FETCH ri.ingredient WHERE r.id = :id")
     Optional<Recipe> findByIdWithIngredients(@Param("id") Long id);
 

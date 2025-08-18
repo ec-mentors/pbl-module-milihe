@@ -3,6 +3,7 @@ package io.everyonecodes.pbl_module_milihe.service;
 import io.everyonecodes.pbl_module_milihe.dto.RecipeDTO;
 import io.everyonecodes.pbl_module_milihe.dto.RecipeIngredientDTO;
 import io.everyonecodes.pbl_module_milihe.dto.RecipeSuggestionDTO;
+import io.everyonecodes.pbl_module_milihe.dto.spoonacular.SpoonacularRecipeInformationDTO;
 import io.everyonecodes.pbl_module_milihe.jpa.Ingredient;
 import io.everyonecodes.pbl_module_milihe.jpa.Recipe;
 import io.everyonecodes.pbl_module_milihe.jpa.RecipeIngredient;
@@ -20,9 +21,11 @@ import java.util.stream.Collectors;
 public class RecipeService {
 
     private final RecipeRepository recipeRepository;
+    private final SpoonacularApiService spoonacularApiService;
 
-    public RecipeService(RecipeRepository recipeRepository) {
+    public RecipeService(RecipeRepository recipeRepository, SpoonacularApiService spoonacularApiService) {
         this.recipeRepository = recipeRepository;
+        this.spoonacularApiService = spoonacularApiService;
     }
 
     public List<RecipeDTO> findAllRecipes() {
@@ -32,10 +35,39 @@ public class RecipeService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional(readOnly = true)
+    /**
+     * Finds a single recipe by its internal DB ID. If the full details
+     * (like instructions) have not been fetched yet, it will call the
+     * Spoonacular API to get them and update the local database.
+     *
+     * @param id The internal database ID of the recipe.
+     * @return An Optional containing the full RecipeDTO.
+     */
+    @Transactional
     public Optional<RecipeDTO> findRecipeById(Long id) {
-        Optional<Recipe> recipeOptional = recipeRepository.findByIdWithIngredients(id);
-        return recipeOptional.map(this::toRecipeDTO);
+        Optional<Recipe> optionalRecipe = recipeRepository.findByIdWithIngredients(id);
+
+        if (optionalRecipe.isEmpty()) {
+            return Optional.empty();
+        }
+
+        Recipe recipe = optionalRecipe.get();
+
+        if (recipe.getStepByStepInstruction() == null || recipe.getStepByStepInstruction().isEmpty()) {
+            System.out.println("[SERVICE] Recipe details for '" + recipe.getTitle() + "' not found locally. Fetching from Spoonacular...");
+
+            SpoonacularRecipeInformationDTO details = spoonacularApiService.getRecipeDetails(recipe.getSpoonacularId());
+
+            if (details != null) {
+                updateRecipeWithDetails(recipe, details);
+                recipeRepository.save(recipe);
+                System.out.println("[SERVICE] Updated local recipe with details from Spoonacular.");
+            }
+        } else {
+            System.out.println("[SERVICE] Recipe details for '" + recipe.getTitle() + "' found locally. Serving from cache.");
+        }
+
+        return Optional.of(toRecipeDTO(recipe));
     }
 
     @Transactional(readOnly = true)
@@ -81,6 +113,22 @@ public class RecipeService {
 
         suggestions.sort(Comparator.comparingInt(RecipeSuggestionDTO::getMissingIngredientCount));
         return suggestions;
+    }
+
+    /**
+     * A helper method to update our Recipe entity from the detailed Spoonacular DTO.
+     */
+    private void updateRecipeWithDetails(Recipe recipe, SpoonacularRecipeInformationDTO details) {
+        recipe.setReadyInMinutes(details.getReadyInMinutes());
+        recipe.setServings(details.getServings());
+        recipe.setSummary(details.getSummary());
+        recipe.setStepByStepInstruction(details.getInstructions());
+        recipe.setVegetarian(details.isVegetarian());
+        recipe.setVegan(details.isVegan());
+        recipe.setGlutenFree(details.isGlutenFree());
+        recipe.setDairyFree(details.isDairyFree());
+        recipe.setHealthScore(details.getHealthScore());
+        recipe.setSourceUrl(details.getSourceUrl());
     }
 
     private RecipeDTO toRecipeDTO(Recipe recipe) {
